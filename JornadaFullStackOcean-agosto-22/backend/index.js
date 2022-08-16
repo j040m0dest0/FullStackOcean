@@ -1,4 +1,6 @@
 const express = require('express');
+const url = "mongodb://localhost:27017";
+const dbName = "jornada-fullstack-agosto-22"
 const app = express();
 
 
