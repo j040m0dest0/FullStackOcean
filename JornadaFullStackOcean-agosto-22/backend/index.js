@@ -75,23 +75,17 @@ async function main(){
     app.post("/pontuacoes", async function (req, res){
       const item = req.body;
 
-      // lista.push({
-      //   id: lista.length + 1,
-      //   nome: item.nome,
-      //   pontos: item.pontos,
-
-      // });
-
       await collection.insertOne(item);
-
-      
-
+   
       res.send(item);
     });
 
-    app.listen(3000, () =>
-      console.log("Servidor rodando em http://localhost:3000/")
-    );
+
+    app.listen(process.env.PORT || 3000);
+
+    // app.listen(3000, () =>
+    //   console.log("Servidor rodando em http://localhost:3000/")
+    // );
 }
 
 //Executando a função main
