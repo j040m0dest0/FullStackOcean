@@ -3,7 +3,7 @@ import nuvens  from "../../asset/clouds.png"
 import cano  from "../../asset/pipe.png"
 import mario  from "../../asset/mario.gif"
 import gameOver  from "../../asset/game-over.png"
-import {useRef, useState } from "react"
+import {useEffect, useRef, useState } from "react"
 
 function Jogo(){
          /*
@@ -22,8 +22,9 @@ function Jogo(){
         // No momento que um estado é atualizado, o componente atualiza
         // tudo o que está sendo 
         
-    const [estaPulando, setEstaPulando] = useState(false);
-    const [estaMorto, setEstaMorto] = useState(false);
+        const [estaPulando, setEstaPulando] = useState(false);
+        const [estaMorto, setEstaMorto] = useState(false);
+        const [pontos, setPontos] = useState(0);
 
        // Criamos as referências para `mario` e `cano`
        const marioRef = useRef();
@@ -58,48 +59,75 @@ function Jogo(){
                 return
             }
 
-                // console.log("Mário está no cano?", valor);
-                setEstaMorto(true);
+            // console.log("Mário está no cano?", valor);
+             setEstaMorto(true);
         }, 100);
 
         console.log({estaMorto})
 
-    
 
-    document.onkeydown = function(){
-        // Atualizamos o estado para true
-         setEstaPulando(true);
+         //Salvar pontuação
 
-        // 700ms = 0.7s
-        setTimeout(function () {
-        // Voltamos o estado para o valor inicial
-        setEstaPulando(false);
-      }, 500);
-    };
+        useEffect(function() {
+            const interval = setInterval(function(){
+                if(estaMorto){
+                    return;
+                }
+        
+                setPontos(pontos + 1);
+        
+                console.log({ pontos });
+            } , 500);
 
-     // Por padrão, o elemento tem a classe `.mario`
-     let marioClassName = "mario";
+            return() => clearInterval(interval);
+        }, [estaMorto, pontos]);
 
-     // Caso esteja pulando (valor true), a classe será `.mario`
-     // e `.mario-pulo`
-      if (estaPulando) {
-            marioClassName = "mario mario-pulo";
-        }
+        document.onkeydown = function(){
+            // Atualizamos o estado para true
+            setEstaPulando(true);
 
+            // 700ms = 0.7s
+            setTimeout(function () {
+            // Voltamos o estado para o valor inicial
+            setEstaPulando(false);
+        }, 500);
+        };
 
-    const marioImage = estaMorto ? gameOver : mario;
+        // Por padrão, o elemento tem a classe `.mario`
+        let marioClassName = "mario";
 
-    return (
-        <div className="jogo">
-            <img className="nuvens" src={nuvens} alt="Nuvens" />
+        // Caso esteja pulando (valor true), a classe será `.mario`
+        // e `.mario-pulo`
+        if (estaPulando) {
+                marioClassName = "mario mario-pulo";
+            }
 
-            <img ref={canoRef} className="cano" src={cano} alt="Cano" />
+        const marioImage = estaMorto ? gameOver : mario;
 
-            <img ref={marioRef} className={marioClassName} src={marioImage} alt="Mário" />
+        const pararAnimacao = estaMorto ? "parar-animacao" : "";
 
-            <div className="chao"></div>
-        </div>
-     );  
+        return (
+            <div className="jogo">
+                <div>Pontos: {pontos}</div>
+                <img className="nuvens" src={nuvens} alt="Nuvens" />
+
+                <img 
+                    ref={canoRef}
+                    className={"cano " + pararAnimacao} 
+                    src={cano}
+                    alt="Cano"
+                />
+
+                <img 
+                    ref={marioRef}
+                    className={marioClassName}
+                    src={marioImage} 
+                    alt="Mário" 
+                />
+
+                <div className="chao"></div>
+            </div>
+        );  
 }
 
 export default Jogo;
