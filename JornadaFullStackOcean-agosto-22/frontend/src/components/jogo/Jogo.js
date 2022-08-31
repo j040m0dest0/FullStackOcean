@@ -5,7 +5,7 @@ import mario  from "../../asset/mario.gif"
 import gameOver  from "../../asset/game-over.png"
 import {useEffect, useRef, useState } from "react"
 
-function Jogo(){
+function Jogo(props){
          /*
         const estaPulando = useState(false);
         const estado = estaPulando[0];
@@ -61,6 +61,7 @@ function Jogo(){
 
             // console.log("Mário está no cano?", valor);
              setEstaMorto(true);
+             props.onMorrer();
         }, 100);
 
         console.log({estaMorto})
