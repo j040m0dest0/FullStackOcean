@@ -37,7 +37,6 @@ async function main(){
 
     app.use(cors());
 
-
   // Sinalizamos para o express que estamos usando
   // JSON no body das requisições
     app.use(express.json());

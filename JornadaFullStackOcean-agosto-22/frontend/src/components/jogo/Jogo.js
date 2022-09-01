@@ -82,7 +82,8 @@ function Jogo(props){
 
         //Salvar pontuação
  
-        useEffect(function() {
+        useEffect(
+            function() {
                 const interval = setInterval(function(){
                     if(estaMorto){
                         return;
@@ -96,7 +97,7 @@ function Jogo(props){
 
                 return() => clearInterval(interval);
             }, 
-              [estaMorto, pontos]
+              [estaMorto, pontos,props]
         );
 
         document.onkeydown = function(){
