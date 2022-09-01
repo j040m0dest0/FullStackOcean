@@ -26,72 +26,88 @@ function Jogo(props){
         const [estaMorto, setEstaMorto] = useState(false);
         const [pontos, setPontos] = useState(0);
 
-       // Criamos as referências para `mario` e `cano`
-       const marioRef = useRef();
-       const canoRef = useRef();
+        // Criamos as referências para `mario` e `cano`
+        const marioRef = useRef();
+        const canoRef = useRef();
 
-    function marioEstaNoCano() {
-        // Acessamos as referências do mario e do cano
-        const mario = marioRef.current;
-        const cano = canoRef.current;
-    
-        // Se por acaso `mario` ou `cano` não forem encontrados,
-        // encerra essa função
-        if (!mario || !cano) {
-          return;
-        }
-         // Retorna o valor da lógica que determinar se o mário
-         // está na mesma posição do cano ou não (com as checagens
-         // que consideram toda a área do cano)
-            return (
-                cano.offsetLeft > mario.offsetLeft &&
-                cano.offsetLeft < mario.offsetLeft + mario.offsetWidth &&
-                mario.offsetTop + mario.offsetHeight > cano.offsetTop
-            );
-    }
+            function marioEstaNoCano() {
+                // Acessamos as referências do mario e do cano
+                const mario = marioRef.current;
+                const cano = canoRef.current;
+            
+                // Se por acaso `mario` ou `cano` não forem encontrados,
+                // encerra essa função
+                if (!mario || !cano) {
+                return;
+                }
+                // Retorna o valor da lógica que determinar se o mário
+                // está na mesma posição do cano ou não (com as checagens
+                // que consideram toda a área do cano)
+                    return (
+                        cano.offsetLeft > mario.offsetLeft &&
+                        cano.offsetLeft < mario.offsetLeft + mario.offsetWidth &&
+                        mario.offsetTop + mario.offsetHeight > cano.offsetTop
+                    );
+            }
 
         // Implementação temporária para exibir se o mário está no cano
         // ou não
-        setInterval(function () {
-            const estaNoCano = marioEstaNoCano();
-
-            if(!estaNoCano){
-                return
-            }
-
-            // console.log("Mário está no cano?", valor);
-             setEstaMorto(true);
-             props.onMorrer();
-        }, 100);
-
-        console.log({estaMorto})
-
-
-         //Salvar pontuação
-
-        useEffect(function() {
-            const interval = setInterval(function(){
-                if(estaMorto){
-                    return;
+        useEffect(
+            // Effect
+            function () {
+              // Implementação temporária para exibir se o mário
+              // está no cano ou não
+              const interval = setInterval(function () {
+                // Pegamos o valor que determinar se o Mario
+                // está no cano ou não
+                const estaNoCano = marioEstaNoCano();
+        
+                // Se o Mario não estiver no cano, encerramos a função com `return`
+                if (!estaNoCano || estaMorto) {
+                  return;
                 }
         
-                setPontos(pontos + 1);
+                // Caso esteja no cano, atualizamos o estado
+                // `estaMorto` para `true`
+                setEstaMorto(true);
+                props.onMorrer(pontos);
+              }, 100);
         
-                console.log({ pontos });
-            } , 500);
+              // (Opcional) Return mecanismo que desfaz o Effect anterior
+              return () => clearInterval(interval);
+            },
+            // Lista de dependências
+            [estaMorto, props]
+          );
 
-            return() => clearInterval(interval);
-        }, [estaMorto, pontos]);
+        //Salvar pontuação
+ 
+        useEffect(function() {
+                const interval = setInterval(function(){
+                    if(estaMorto){
+                        return;
+                    }
+            
+                    setPontos(pontos + 1);
+                    props.onPontos(pontos +1)
+            
+                    console.log({ pontos });
+                } , 500);
+
+                return() => clearInterval(interval);
+            }, 
+              [estaMorto, pontos]
+        );
 
         document.onkeydown = function(){
-            // Atualizamos o estado para true
-            setEstaPulando(true);
+                // Atualizamos o estado para true
+                setEstaPulando(true);
 
-            // 700ms = 0.7s
-            setTimeout(function () {
-            // Voltamos o estado para o valor inicial
-            setEstaPulando(false);
-        }, 500);
+                // 700ms = 0.7s
+                setTimeout(function () {
+                    // Voltamos o estado para o valor inicial
+                    setEstaPulando(false);
+                 }, 500);
         };
 
         // Por padrão, o elemento tem a classe `.mario`

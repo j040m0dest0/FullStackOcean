@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const cors = require("cors");
 
 
 //const url = "mongodb://localhost:27017";
@@ -33,6 +34,8 @@ async function main(){
     console.log("conectado com sucesso ")
 
     const app = express();
+
+    app.use(cors());
 
 
   // Sinalizamos para o express que estamos usando
@@ -88,7 +91,7 @@ async function main(){
     });
 
 
-    app.listen(process.env.PORT || 3000);
+    app.listen(process.env.PORT || 3333);
 
     // app.listen(3000, () =>
     //   console.log("Servidor rodando em http://localhost:3000/")
